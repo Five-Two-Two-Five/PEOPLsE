@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // User Validation
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'neighborhoodId', 'credits']) &&
+             data.email is string && data.email.size() <= 200 &&
+             data.neighborhoodId is string && data.neighborhoodId.size() <= 64 &&
+             data.credits is number && data.credits >= 0;
+    }
+
+    // Pledge Validation - Core Schema
+    function isValidPledge(data) {
+      return data.keys().hasAll(['userId', 'neighborhoodId', 'startTime', 'durationHours', 'status']) &&
+             data.userId is string &&
+             data.neighborhoodId is string &&
+             data.startTime is timestamp &&
+             data.durationHours is number && data.durationHours > 0 && data.durationHours <= 24 &&
+             data.status in ['pending', 'approved', 'rejected', 'completed', 'cancelled'];
+    }
+
+    // --- Matches ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().uid == userId;
+      allow update: if isOwner(userId) && isValidUser(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['name', 'neighborhoodId', 'isSocialTariff']);
+    }
+
+    match /neighborhoods/{neighborhoodId} {
+      allow read: if true; // Public grid data
+    }
+
+    match /forecasts/{forecastId} {
+      allow read: if true; // Public grid data
+    }
+
+    match /pledges/{pledgeId} {
+      // Allow list and get for all to support Admin dashboard without sign-in
+      // and public grid monitoring.
+      allow list, get: if true;
+      
+      allow create: if isSignedIn() && isValidPledge(incoming()) && incoming().userId == request.auth.uid &&
+                    exists(/databases/$(database)/documents/neighborhoods/$(incoming().neighborhoodId));
+      
+      allow update: if (
+        // Contributor Update: Owner can edit pending pledges
+        (isOwner(existing().userId) && isValidPledge(incoming()) &&
+         existing().status == 'pending' &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['startTime', 'durationHours', 'status'])) ||
+        // Admin Update: Grid Command can approve/reject pending/status items
+        (existing().status in ['pending', 'approved', 'rejected'] &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['status']) && 
+         incoming().status in ['approved', 'rejected'])
+      );
+      
+      allow delete: if isOwner(existing().userId) && existing().status == 'pending';
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and energy account details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "neighborhoodId": { "type": "string" },
+        "meterId": { "type": "string" },
+        "credits": { "type": "number" },
+        "isSocialTariff": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "neighborhoodId", "credits"]
+    },
+    "Neighborhood": {
+      "title": "Neighborhood",
+      "description": "Grid zone or transformer area",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "transformerCapacityKw": { "type": "number" },
+        "currentLoadKw": { "type": "number" }
+      },
+      "required": ["id", "name", "transformerCapacityKw"]
+    },
+    "Pledge": {
+      "title": "Pledge",
+      "description": "A voluntary load reduction commitment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "neighborhoodId": { "type": "string" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "durationHours": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "completed", "cancelled"] },
+        "rewardTier": { "type": "string", "enum": ["standard", "peak", "emergency"] },
+        "expectedCredit": { "type": "number" },
+        "verified": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "neighborhoodId", "startTime", "durationHours", "status"]
+    },
+    "GridForecast": {
+      "title": "Grid Forecast",
+      "description": "Hourly grid stress forecasts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "forecastTime": { "type": "string", "format": "date-time" },
+        "stressLevel": { "type": "number", "description": "0-100 percentage" },
+        "demandKw": { "type": "number" },
+        "capacityKw": { "type": "number" },
+        "message": { "type": "string" }
+      },
+      "required": ["forecastTime", "stressLevel"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/neighborhoods/{neighborhoodId}": {
+      "schema": "Neighborhood",
+      "description": "Neighborhood areas"
+    },
+    "/pledges/{pledgeId}": {
+      "schema": "Pledge",
+      "description": "User load reduction pledges"
+    },
+    "/forecasts/{forecastId}": {
+      "schema": "GridForecast",
+      "description": "Grid stress forecasts"
+    }
+  }
+}
