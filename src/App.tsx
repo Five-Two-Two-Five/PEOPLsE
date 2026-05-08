@@ -104,7 +104,7 @@ export default function App() {
           className="w-full max-w-4xl z-10"
         >
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-[0_0_20px_#CCFF0050]">
+            <div className="w-12 h-12 bg-brand rounded-none flex items-center justify-center shadow-[0_0_20px_#CCFF0050]">
               <Zap className="text-black w-6 h-6 fill-black" />
             </div>
             <span className="text-xs font-black uppercase tracking-[0.4em] text-white/60">System.Architects — Protocol 2.0</span>
@@ -179,7 +179,7 @@ export default function App() {
             <AdminDashboard />
           ) : (
             <>
-              {view === 'dashboard' && <Dashboard profile={profile} />}
+              {view === 'dashboard' && <Dashboard profile={profile} onViewChange={setView} />}
               {view === 'pledges' && <PledgesView profile={profile} />}
               {view === 'profile' && <ProfileView profile={profile} onUpdate={setProfile} />}
             </>
