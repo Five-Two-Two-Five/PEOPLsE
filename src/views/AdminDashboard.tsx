@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, updateDoc, doc, getDoc, increment } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { Pledge, Neighborhood } from '../types';
 import { Card, CardHeader, CardContent } from '../components/Card';
@@ -41,7 +41,19 @@ export function AdminDashboard() {
 
   const handleAction = async (pledgeId: string, status: 'approved' | 'rejected') => {
     try {
-      await updateDoc(doc(db, 'pledges', pledgeId), { status });
+      const pledgeRef = doc(db, 'pledges', pledgeId);
+      await updateDoc(pledgeRef, { status });
+
+      if (status === 'approved') {
+        const pledgeSnap = await getDoc(pledgeRef);
+        if (pledgeSnap.exists()) {
+          const pledgeData = pledgeSnap.data() as Pledge;
+          const userRef = doc(db, 'users', pledgeData.userId);
+          await updateDoc(userRef, {
+            credits: increment(pledgeData.expectedCredit)
+          });
+        }
+      }
     } catch (err) {
       handleFirestoreError(err, OperationType.UPDATE, `pledges/${pledgeId}`);
     }
@@ -87,7 +99,7 @@ export function AdminDashboard() {
                         {p.rewardTier === 'peak' ? 'PK' : 'ST'}
                       </div>
                       <div>
-                        <p className="text-sm font-black uppercase tracking-widest text-white">{p.userId.substring(0, 12)}...</p>
+                        <p className="text-sm font-black uppercase tracking-widest text-white">{p.userEmail || p.userId.substring(0, 12) + '...'}</p>
                         <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">
                           {format(p.startTime.toDate(), 'HH:mm')} ({p.durationHours}H) — {p.neighborhoodId}
                         </p>

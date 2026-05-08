@@ -22,6 +22,7 @@ export type RewardTier = 'standard' | 'peak' | 'emergency';
 export interface Pledge {
   id: string;
   userId: string;
+  userEmail?: string;
   neighborhoodId: string;
   startTime: any; // Firestore Timestamp
   durationHours: number;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, addDoc, Timestamp, doc, updateDoc } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { UserProfile, Pledge, PledgeStatus, RewardTier } from '../types';
 import { Card, CardHeader, CardContent } from '../components/Card';
@@ -43,6 +43,16 @@ export function PledgesView({ profile }: { profile: UserProfile | null }) {
     return unsub;
   }, [profile]);
 
+  const handleCancelPledge = async (pledgeId: string) => {
+    try {
+      await updateDoc(doc(db, 'pledges', pledgeId), {
+        status: 'cancelled'
+      });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `pledges/${pledgeId}`);
+    }
+  };
+
   const handleSubmitPledge = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
@@ -56,6 +66,7 @@ export function PledgesView({ profile }: { profile: UserProfile | null }) {
 
       await addDoc(collection(db, 'pledges'), {
         userId: profile.uid,
+        userEmail: profile.email,
         neighborhoodId: profile.neighborhoodId,
         startTime: Timestamp.fromDate(start),
         durationHours: duration,
@@ -134,7 +145,7 @@ export function PledgesView({ profile }: { profile: UserProfile | null }) {
                 </form>
                 <div className="mt-8 pt-8 border-t border-black/10 flex items-center justify-between">
                    <div className="flex items-center gap-4">
-                      <div className="w-3 h-3 bg-black rounded-full animate-pulse" />
+                      <div className="w-3 h-3 bg-black rounded-none animate-pulse" />
                       <span className="text-xs font-black uppercase tracking-widest">Projected Return: ${ (duration * (new Date(startTime).getHours() >= 17 ? 1.5 : 0.5)).toFixed(2) } Unit Credits</span>
                    </div>
                    <span className="text-[10px] font-bold uppercase opacity-60">Verified Grid Contribution</span>
@@ -186,16 +197,28 @@ export function PledgesView({ profile }: { profile: UserProfile | null }) {
                         </div>
                         <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/40 italic">
                           <span className="flex items-center gap-2">
-                             <div className="w-1.5 h-1.5 bg-white/20 rounded-full" />
+                             <div className="w-1.5 h-1.5 bg-white/20 rounded-none" />
                              {format(pledge.startTime.toDate(), 'HH:mm')} — {pledge.durationHours}H Sync
                           </span>
                           <span className="text-brand">Tier: {pledge.rewardTier}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-black italic tracking-tighter text-white group-hover:text-brand transition-colors">+${pledge.expectedCredit.toFixed(2)}</p>
-                      <p className="text-[10px] font-black text-white/30 uppercase tracking-tighter mt-1">Grid Incentive</p>
+                    <div className="flex items-center gap-6">
+                      {pledge.status === 'pending' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCancelPledge(pledge.id)}
+                          className="py-2 px-4 border-red-500/30 text-red-500/60 hover:text-red-500 hover:border-red-500/50"
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                      <div className="text-right">
+                        <p className="text-2xl font-black italic tracking-tighter text-white group-hover:text-brand transition-colors">+${pledge.expectedCredit.toFixed(2)}</p>
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-tighter mt-1">Grid Incentive</p>
+                      </div>
                     </div>
                   </div>
                 ))

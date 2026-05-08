@@ -48,7 +48,7 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between px-6 py-4 bg-[#0A0A0A] border-b border-white/10 sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
+          <div className={cn("w-8 h-8 rounded-none flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
             <Zap className="text-black w-5 h-5 fill-black" />
           </div>
           <span className="font-black text-xl tracking-tighter uppercase italic">PEOPLsE</span>
@@ -69,7 +69,7 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
           </div>
 
           <div className="p-8 hidden md:flex items-center gap-4">
-            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
+            <div className={cn("w-10 h-10 rounded-none flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
               <Zap className={cn("text-black w-6 h-6 fill-black", isAdminMode && "animate-pulse")} />
             </div>
             <span className={cn("font-black text-2xl tracking-tighter uppercase italic", isAdminMode ? "text-white" : "text-brand")}>PEOPLsE</span>
@@ -113,7 +113,7 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
             ) : (
               <>
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 rounded-full border-2 border-white/10 overflow-hidden bg-white/5">
+                  <div className="w-10 h-10 rounded-none border-2 border-white/10 overflow-hidden bg-white/5">
                     {user ? (
                       <img src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName}`} alt="User" />
                     ) : (
@@ -123,7 +123,7 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
                   <div className="flex-1 overflow-hidden">
                     <p className="text-[10px] font-black text-white uppercase tracking-wider truncate">{user?.displayName || 'Unknown'}</p>
                     <div className="flex items-center gap-2 mt-1">
-                       <div className="w-1.5 h-1.5 bg-brand rounded-full"></div>
+                       <div className="w-1.5 h-1.5 bg-brand rounded-none"></div>
                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter truncate">Live Connection</p>
                     </div>
                   </div>
