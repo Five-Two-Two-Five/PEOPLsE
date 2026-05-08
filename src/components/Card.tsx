@@ -13,7 +13,7 @@ export function Card({ children, className }: CardProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "bg-white/5 border border-white/10 rounded-none overflow-hidden",
+        "bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm",
         className
       )}
     >
@@ -24,7 +24,7 @@ export function Card({ children, className }: CardProps) {
 
 export function CardHeader({ children, className }: CardProps) {
   return (
-    <div className={cn("px-6 py-4 border-b border-white/10 bg-white/5", className)}>
+    <div className={cn("px-6 py-4 border-b border-slate-200 bg-slate-50/50", className)}>
       {children}
     </div>
   );
@@ -36,7 +36,7 @@ export function CardContent({ children, className }: CardProps) {
 
 export function CardFooter({ children, className }: CardProps) {
   return (
-    <div className={cn("px-6 py-4 border-t border-white/10 bg-white/5", className)}>
+    <div className={cn("px-6 py-4 border-t border-slate-200 bg-slate-50/50", className)}>
       {children}
     </div>
   );

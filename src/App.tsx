@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, signIn, logout, db } from './lib/firebase';
@@ -78,46 +73,39 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
         <Zap className="w-12 h-12 text-brand animate-pulse mb-4" />
-        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-brand/60 animate-pulse">Initializing.Core...</div>
+        <div className="text-xs font-bold uppercase tracking-widest text-slate-400 animate-pulse">Initializing Core...</div>
       </div>
     );
   }
 
   if (!user && !isAdminMode) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] px-4 font-sans selection:bg-brand selection:text-black relative overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 font-sans relative overflow-hidden">
         {/* Background Grid Lines */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
         
-        {/* Decorative Floating Circle */}
-        <div className="absolute right-[10%] top-[20%] w-[300px] h-[300px] rounded-full border border-white/5 flex items-center justify-center pointer-events-none">
-          <div className="w-[180px] h-[180px] rounded-full border border-brand/20 flex items-center justify-center">
-             <div className="w-[100px] h-[100px] bg-brand rounded-full opacity-10 blur-xl"></div>
-          </div>
-        </div>
-
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-4xl z-10"
         >
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-[0_0_20px_#CCFF0050]">
-              <Zap className="text-black w-6 h-6 fill-black" />
+            <div className="w-12 h-12 bg-brand rounded-lg flex items-center justify-center shadow-lg">
+              <Zap className="text-white w-6 h-6 fill-white" />
             </div>
-            <span className="text-xs font-black uppercase tracking-[0.4em] text-white/60">System.Architects — Protocol 2.0</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">System Architects — Protocol 2.0</span>
           </div>
 
-          <h1 className="text-[120px] leading-[0.8] font-black tracking-[-0.04em] uppercase m-0 mb-12">
+          <h1 className="text-8xl md:text-[120px] leading-[0.9] font-bold tracking-tight text-slate-900 m-0 mb-12">
             OPTIMIZE<br/>
-            <span className="text-brand italic">FUTURE</span>
+            <span className="text-brand">FUTURE</span>
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
             <div className="max-w-md">
-              <p className="text-xl text-white/50 leading-relaxed font-medium">
+              <p className="text-xl text-slate-500 leading-relaxed font-medium">
                 PEOPLsE is the participative energy management platform that empowers households to voluntarily stabilize the national grid.
               </p>
             </div>
@@ -125,22 +113,22 @@ export default function App() {
             <div className="space-y-4">
               <Button 
                 onClick={signIn} 
-                className="w-full justify-between py-8 text-xl font-black italic rounded-none border border-brand/50 group"
+                className="w-full justify-between py-8 text-xl font-bold rounded-lg shadow-lg group"
                 variant="primary"
               >
                 Join Protocol
-                <LogIn className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+                <LogIn className="w-8 h-8 group-hover:translate-x-1 transition-transform" />
               </Button>
 
               <div className="flex items-center gap-4 py-2">
-                <div className="h-[1px] flex-1 bg-white/10"></div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">or</span>
-                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <div className="h-[1px] flex-1 bg-slate-200"></div>
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-300">or</span>
+                <div className="h-[1px] flex-1 bg-slate-200"></div>
               </div>
 
               <Button 
                 onClick={handleAdminAccess} 
-                className="w-full justify-between py-6 text-sm font-black italic rounded-none border border-white/10 bg-white/5 hover:bg-white/10 group"
+                className="w-full justify-between py-6 text-sm font-bold rounded-lg group"
                 variant="secondary"
               >
                 System Admin Console
@@ -151,8 +139,8 @@ export default function App() {
         </motion.div>
 
         {/* Vertical Rail Text */}
-        <div className="absolute left-8 top-1/2 -translate-y-1/2 -rotate-180 opacity-20 hidden md:block" style={{ writingMode: 'vertical-rl' }}>
-          <span className="text-[8px] tracking-[0.8em] uppercase font-black">STABILIZING THE GRID ONE HOUSEHOLD AT A TIME — MMXXIV</span>
+        <div className="absolute left-8 top-1/2 -translate-y-1/2 -rotate-180 opacity-10 hidden md:block" style={{ writingMode: 'vertical-rl' }}>
+          <span className="text-[10px] tracking-[0.6em] uppercase font-bold text-slate-400">STABILIZING THE GRID ONE HOUSEHOLD AT A TIME — MMXXIV</span>
         </div>
       </div>
     );
@@ -189,4 +177,3 @@ export default function App() {
     </Layout>
   );
 }
-

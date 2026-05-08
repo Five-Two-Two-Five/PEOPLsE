@@ -9,8 +9,6 @@ import {
   Menu, 
   X, 
   Zap,
-  Globe,
-  Wallet,
   ShieldAlert
 } from 'lucide-react';
 import { Button } from './Button';
@@ -44,40 +42,36 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
   const navItems = isAdminMode ? adminNav : contributorNav;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col md:flex-row font-sans selection:bg-brand selection:text-black">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col md:flex-row font-sans">
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between px-6 py-4 bg-[#0A0A0A] border-b border-white/10 sticky top-0 z-40">
+      <header className="md:hidden flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
-            <Zap className="text-black w-5 h-5 fill-black" />
+          <div className="w-8 h-8 rounded-md flex items-center justify-center bg-brand">
+            <Zap className="text-white w-5 h-5 fill-white" />
           </div>
-          <span className="font-black text-xl tracking-tighter uppercase italic">PEOPLsE</span>
+          <span className="font-bold text-xl tracking-tight">PEOPLsE</span>
         </div>
-        <button onClick={() => setSidebarOpen(!isSidebarOpen)} className="p-2 text-white">
+        <button onClick={() => setSidebarOpen(!isSidebarOpen)} className="p-2 text-slate-600">
           {isSidebarOpen ? <X /> : <Menu />}
         </button>
       </header>
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-0 z-50 md:relative md:flex md:flex-col w-72 bg-[#0A0A0A] border-r border-white/10 text-white transition-transform duration-300",
+        "fixed inset-0 z-50 md:relative md:flex md:flex-col w-64 bg-slate-50 border-r border-slate-200 transition-transform duration-300",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}>
-        <div className="flex flex-col h-full relative">
-          <div className="absolute -left-4 top-1/2 -translate-y-1/2 rotate-180 pointer-events-none opacity-10 hidden md:block" style={{ writingMode: 'vertical-rl' }}>
-            <span className="text-[10px] tracking-[1em] uppercase font-black whitespace-nowrap">ESTABLISHED MMXXIV — GLOBAL SCALE</span>
-          </div>
-
+        <div className="flex flex-col h-full bg-white md:bg-transparent">
           <div className="p-8 hidden md:flex items-center gap-4">
-            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", isAdminMode ? "bg-white" : "bg-brand")}>
-              <Zap className={cn("text-black w-6 h-6 fill-black", isAdminMode && "animate-pulse")} />
+            <div className="w-10 h-10 rounded-md flex items-center justify-center bg-brand">
+              <Zap className="text-white w-6 h-6 fill-white" />
             </div>
-            <span className={cn("font-black text-2xl tracking-tighter uppercase italic", isAdminMode ? "text-white" : "text-brand")}>PEOPLsE</span>
+            <span className="font-bold text-2xl tracking-tight">PEOPLsE</span>
           </div>
 
-          <nav className="flex-1 px-4 py-8 space-y-2">
-            <div className="px-4 mb-4 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
-              {isAdminMode ? 'System.Authority' : 'System.Controllers'}
+          <nav className="flex-1 px-4 py-8 space-y-1">
+            <div className="px-4 mb-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              {isAdminMode ? 'Administration' : 'Menu'}
             </div>
             {navItems.map((item) => (
               <button
@@ -87,10 +81,10 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
                   setSidebarOpen(false);
                 }}
                 className={cn(
-                  "w-full flex items-center gap-4 px-6 py-4 rounded-none text-xs font-black uppercase tracking-widest transition-all border-l-2",
+                  "w-full flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-all",
                   activeView === item.id 
-                    ? `border-brand bg-white/5 ${isAdminMode ? 'text-white' : 'text-brand'}` 
-                    : "border-transparent text-white/50 hover:bg-white/5 hover:text-white"
+                    ? "bg-brand/10 text-brand"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
                 <item.icon className="w-4 h-4" />
@@ -99,64 +93,63 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
             ))}
           </nav>
 
-          <div className="p-8 border-t border-white/10">
+          <div className="p-6 border-t border-slate-200 bg-white md:bg-transparent">
             {isAdminMode ? (
-              <div className="bg-white/5 p-6 mb-8 border border-white/10 border-brand/30">
-                <div className="flex items-center gap-3 mb-4">
+              <div className="bg-brand/5 p-4 mb-6 border border-brand/20 rounded-md">
+                <div className="flex items-center gap-2 mb-2">
                   <ShieldAlert className="w-4 h-4 text-brand" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-brand italic underline">Admin Server</span>
+                  <span className="text-xs font-bold text-brand">Admin Mode</span>
                 </div>
-                <div className="text-[10px] font-bold text-white/40 uppercase leading-relaxed">
-                  ZETDC.Command.v4<br/>Auth: Bypassed_Session
+                <div className="text-[10px] text-slate-500 font-medium">
+                  ZETDC Command v4<br/>Secure Session
                 </div>
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 rounded-full border-2 border-white/10 overflow-hidden bg-white/5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full border border-slate-200 overflow-hidden bg-slate-100">
                     {user ? (
                       <img src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName}`} alt="User" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[8px] font-black uppercase tracking-tighter">?</div>
+                      <div className="w-full h-full flex items-center justify-center text-xs font-bold">?</div>
                     )}
                   </div>
                   <div className="flex-1 overflow-hidden">
-                    <p className="text-[10px] font-black text-white uppercase tracking-wider truncate">{user?.displayName || 'Unknown'}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                       <div className="w-1.5 h-1.5 bg-brand rounded-full"></div>
-                       <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter truncate">Live Connection</p>
+                    <p className="text-sm font-semibold text-slate-900 truncate">{user?.displayName || 'Unknown'}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                       <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                       <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Connected</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-white/5 p-6 mb-8 border border-white/10">
-                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-3">
-                    <span className="text-white/40">Credits.Pool</span>
-                    <span className="text-brand font-mono italic">+{profile?.credits.toFixed(2) || '0.00'} Units</span>
+                <div className="bg-slate-100/50 p-4 mb-6 border border-slate-200 rounded-md">
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider mb-2">
+                    <span className="text-slate-400">Balance</span>
+                    <span className="text-brand">+{profile?.credits.toFixed(2) || '0.00'}</span>
                   </div>
-                  <div className="h-1 bg-white/10 w-full">
-                    <div className="h-full bg-brand w-2/3 shadow-[0_0_10px_#CCFF00]"></div>
+                  <div className="h-1.5 bg-slate-200 w-full rounded-full overflow-hidden">
+                    <div className="h-full bg-brand w-2/3" style={{ width: `${Math.min(((profile?.credits || 0) / 100) * 100, 100)}%` }}></div>
                   </div>
                 </div>
               </>
             )}
 
             <Button 
-              className="w-full justify-start py-4 h-auto"
+              className="w-full justify-start py-2.5"
+              variant="outline"
               onClick={onLogout}
             >
-              <LogOut className="w-4 h-4 mr-3" />
-              Terminate
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </Button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto max-h-screen custom-scrollbar">
-        <div className="max-w-7xl mx-auto p-6 md:p-12 relative">
-          {/* Background Ambient Circle */}
-          <div className="fixed top-[10%] right-[5%] w-[600px] h-[600px] rounded-full border border-white/5 pointer-events-none opacity-20 -z-10" />
+      <main className="flex-1 overflow-y-auto max-h-screen">
+        <div className="max-w-7xl mx-auto p-6 md:p-12">
           {children}
         </div>
       </main>
@@ -164,7 +157,7 @@ export function Layout({ children, user, profile, onLogout, activeView, onViewCh
       {/* Backdrop for mobile */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}

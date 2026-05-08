@@ -9,24 +9,24 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const variants = {
-      primary: 'bg-brand text-black hover:bg-brand/90 font-black uppercase tracking-widest text-xs',
-      secondary: 'bg-white/10 text-white hover:bg-white/20 uppercase tracking-widest text-xs',
-      outline: 'border border-white/20 bg-transparent hover:bg-white/5 uppercase tracking-widest text-xs',
-      ghost: 'bg-transparent hover:bg-white/10 text-white/60 uppercase tracking-widest text-xs',
-      danger: 'bg-red-600 text-white hover:bg-red-700 uppercase tracking-widest text-xs',
+      primary: 'bg-brand text-white hover:bg-brand/90',
+      secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
+      outline: 'border border-slate-200 bg-transparent hover:bg-slate-50 text-slate-700',
+      ghost: 'bg-transparent hover:bg-slate-100 text-slate-600',
+      danger: 'bg-red-600 text-white hover:bg-red-700',
     };
 
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2',
-      lg: 'px-6 py-3 text-lg',
+      md: 'px-4 py-2 text-sm font-medium',
+      lg: 'px-6 py-3 text-base font-medium',
     };
 
     return (
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none',
+          'inline-flex items-center justify-center rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand/50 disabled:opacity-50 disabled:pointer-events-none',
           variants[variant],
           sizes[size],
           className
