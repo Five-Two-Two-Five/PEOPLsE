@@ -5,14 +5,10 @@ import { Button } from '../components/Button';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { 
-  Home, 
   Zap,
-  MapPin, 
   Settings, 
   ExternalLink, 
   ShieldCheck, 
-  FileText,
-  BadgeCheck
 } from 'lucide-react';
 
 interface ProfileViewProps {
@@ -46,91 +42,91 @@ export function ProfileView({ profile, onUpdate }: ProfileViewProps) {
 
   return (
     <div className="max-w-5xl mx-auto space-y-12 pb-24">
-      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-12 gap-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-12 gap-8">
         <div className="flex items-center gap-8">
-          <div className="w-24 h-24 rounded-none bg-brand flex items-center justify-center shadow-[0_0_30px_#CCFF0030]">
-            <Zap className="w-12 h-12 text-black fill-black" />
+          <div className="w-24 h-24 rounded-lg bg-brand flex items-center justify-center shadow-lg">
+            <Zap className="w-12 h-12 text-white fill-white" />
           </div>
           <div>
-            <h1 className="text-7xl font-black uppercase tracking-tighter italic m-0">Contributor<br/>{profile?.name}</h1>
+            <h1 className="text-6xl font-bold tracking-tight text-slate-900 m-0">Contributor<br/>{profile?.name}</h1>
             <div className="flex items-center gap-4 mt-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">Account — Node.Authority.Root</span>
-              <div className="h-[1px] w-12 bg-white/10"></div>
-              <span className="font-mono text-xs text-brand tracking-tighter">{profile?.meterId}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Account — Node Authority Root</span>
+              <div className="h-[1px] w-12 bg-slate-200"></div>
+              <span className="font-mono text-sm text-brand font-semibold tracking-tight">{profile?.meterId}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <Card className="bg-transparent">
+        <Card>
           <CardHeader>
-            <h2 className="text-lg font-black uppercase tracking-widest italic border-none">Node Configuration</h2>
+            <h2 className="text-lg font-bold text-slate-900">Node Configuration</h2>
           </CardHeader>
           <CardContent className="space-y-8 pt-8">
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Identifier</label>
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Identifier</label>
               <input 
                 type="text" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-white/5 px-6 py-4 rounded-none border border-white/10 text-white font-black uppercase tracking-widest outline-none focus:border-brand transition-colors"
+                className="w-full bg-white px-4 py-3 rounded-md border border-slate-200 text-slate-900 font-medium outline-none focus:border-brand focus:ring-1 focus:ring-brand/50 transition-all"
               />
             </div>
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Assigned Grid Segment</label>
-              <div className="w-full bg-white/5 opacity-50 px-6 py-4 rounded-none border border-white/10 text-white font-black uppercase tracking-widest flex items-center justify-between">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Assigned Grid Segment</label>
+              <div className="w-full bg-slate-50 px-4 py-3 rounded-md border border-slate-200 text-slate-500 font-medium flex items-center justify-between">
                 <span>{neighborhoods.find(n => n.id === profile?.neighborhoodId)?.name}</span>
-                <span className="text-[8px] px-2 py-0.5 border border-white/20">LOCKED</span>
+                <span className="text-[10px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded font-bold">LOCKED</span>
               </div>
             </div>
-            <Button onClick={handleSave} disabled={loading} className="w-full py-6 text-lg italic">
+            <Button onClick={handleSave} disabled={loading} className="w-full py-4 text-base">
               {loading ? 'Processing...' : 'Update Sync'}
             </Button>
           </CardContent>
         </Card>
 
         <div className="space-y-12">
-          <Card className="bg-[#1A1A1A] border-brand/20 shadow-[0_0_40px_rgba(204,255,0,0.05)]">
-            <CardHeader className="bg-brand/5 border-brand/10">
-              <h2 className="text-lg font-black uppercase tracking-widest italic text-brand">Telemetry Health</h2>
+          <Card className="border-brand/20 shadow-lg">
+            <CardHeader className="bg-brand/5">
+              <h2 className="text-lg font-bold text-brand">Telemetry Health</h2>
             </CardHeader>
             <CardContent className="space-y-6 pt-8">
-              <div className="flex items-start gap-4 p-6 bg-white/5 border border-white/10">
+              <div className="flex items-start gap-4 p-6 bg-slate-50 border border-slate-100 rounded-lg">
                 <ShieldCheck className="w-6 h-6 text-brand shrink-0" />
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-widest text-white mb-2">Decision Layer: active</p>
-                  <p className="text-[11px] font-medium text-white/60 leading-relaxed">
-                    Bi-directional communication tunnel established with ZETDC coordination mesh. Real-time override capability: **READY**.
+                  <p className="text-sm font-bold text-slate-900 mb-1">Decision Layer: active</p>
+                  <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                    Bi-directional communication tunnel established with ZETDC coordination mesh. Real-time override capability: <span className="text-brand font-bold">READY</span>.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-px bg-white/10 border border-white/10 overflow-hidden">
-                <div className="bg-[#1A1A1A] p-4 flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                  <span className="text-white/40">Protocol</span>
-                  <span>Direct/Relay.v4</span>
+              <div className="divide-y divide-slate-100 border border-slate-100 rounded-lg overflow-hidden">
+                <div className="bg-white p-4 flex items-center justify-between text-xs font-semibold">
+                  <span className="text-slate-400 uppercase tracking-wider">Protocol</span>
+                  <span className="text-slate-900">Direct/Relay.v4</span>
                 </div>
-                <div className="bg-[#1A1A1A] p-4 flex items-center justify-between text-[10px] font-black uppercase tracking-widest font-mono">
-                  <span className="text-white/40">Encryption</span>
-                  <span className="text-brand">AES-256-GCM</span>
+                <div className="bg-white p-4 flex items-center justify-between text-xs font-semibold">
+                  <span className="text-slate-400 uppercase tracking-wider">Encryption</span>
+                  <span className="text-brand font-mono">AES-256-GCM</span>
                 </div>
-                <div className="bg-[#1A1A1A] p-4 flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                  <span className="text-white/40">Status</span>
-                  <span className="italic">Synchronized</span>
+                <div className="bg-white p-4 flex items-center justify-between text-xs font-semibold">
+                  <span className="text-slate-400 uppercase tracking-wider">Status</span>
+                  <span className="text-green-600 font-bold italic">Synchronized</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <div className="grid grid-cols-2 gap-4">
-             <Button variant="ghost" className="justify-between p-6 bg-white/5 border border-white/5 hover:border-white/20">
-                <span className="text-[10px] font-black uppercase tracking-widest">Archives</span>
-                <ExternalLink className="w-3 h-3" />
+             <Button variant="outline" className="justify-between p-4 h-auto">
+                <span className="text-xs font-bold uppercase tracking-wider">Archives</span>
+                <ExternalLink className="w-4 h-4" />
              </Button>
-             <Button variant="ghost" className="justify-between p-6 bg-white/5 border border-white/5 hover:border-white/20">
-                <span className="text-[10px] font-black uppercase tracking-widest">Protocols</span>
-                <Settings className="w-3 h-3" />
+             <Button variant="outline" className="justify-between p-4 h-auto">
+                <span className="text-xs font-bold uppercase tracking-wider">Protocols</span>
+                <Settings className="w-4 h-4" />
              </Button>
           </div>
         </div>
