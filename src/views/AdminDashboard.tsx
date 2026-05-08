@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, updateDoc, doc, increment, getDoc } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { Pledge, Neighborhood } from '../types';
 import { Card, CardHeader, CardContent } from '../components/Card';
@@ -41,7 +41,25 @@ export function AdminDashboard() {
 
   const handleAction = async (pledgeId: string, status: 'approved' | 'rejected') => {
     try {
-      await updateDoc(doc(db, 'pledges', pledgeId), { status });
+      if (status === 'approved') {
+        const pledgeDoc = await getDoc(doc(db, 'pledges', pledgeId));
+        if (pledgeDoc.exists()) {
+          const pledgeData = pledgeDoc.data() as Pledge;
+
+          // Award credits to user
+          await updateDoc(doc(db, 'users', pledgeData.userId), {
+            credits: increment(pledgeData.expectedCredit)
+          });
+
+          // Mark pledge as completed and verified
+          await updateDoc(doc(db, 'pledges', pledgeId), {
+            status: 'completed',
+            verified: true
+          });
+        }
+      } else {
+        await updateDoc(doc(db, 'pledges', pledgeId), { status });
+      }
     } catch (err) {
       handleFirestoreError(err, OperationType.UPDATE, `pledges/${pledgeId}`);
     }

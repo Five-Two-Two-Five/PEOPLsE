@@ -164,11 +164,11 @@ export function PledgesView({ profile }: { profile: UserProfile | null }) {
                     <div className="flex items-center gap-8">
                       <div className={cn(
                         "w-12 h-12 flex items-center justify-center border-2 uppercase font-black text-xs italic",
-                        pledge.status === 'completed' ? "border-brand text-brand" :
+                        (pledge.status === 'completed' || pledge.status === 'approved') ? "border-brand text-brand" :
                         pledge.status === 'pending' ? "border-white/20 text-white/40" :
                         "border-red-500/50 text-red-500"
                       )}>
-                        {pledge.status === 'completed' ? 'CP' : pledge.status === 'pending' ? 'PD' : 'FL'}
+                        {pledge.status === 'completed' ? 'CP' : pledge.status === 'approved' ? 'AP' : pledge.status === 'pending' ? 'PD' : 'FL'}
                       </div>
                       <div>
                         <div className="flex items-center gap-4 mb-2">

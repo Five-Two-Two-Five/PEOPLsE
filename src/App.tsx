@@ -11,7 +11,7 @@
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, signIn, logout, db } from './lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { UserProfile } from './types';
 import { seedInitialData } from './lib/mockData';
 import { Layout } from './components/Layout';
@@ -32,34 +32,42 @@ export default function App() {
 
   useEffect(() => {
     seedInitialData();
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+    let profileUnsubscribe: () => void = () => {};
+
+    const authUnsubscribe = onAuthStateChanged(auth, async (u) => {
       setUser(u);
+      profileUnsubscribe();
+
       if (u) {
         const userDoc = doc(db, 'users', u.uid);
-        const snap = await getDoc(userDoc);
-        if (snap.exists()) {
-          setProfile(snap.data() as UserProfile);
-        } else {
-          // Initialize profile
-          const newProfile: UserProfile = {
-            uid: u.uid,
-            email: u.email || '',
-            name: u.displayName || 'Contributor',
-            neighborhoodId: 'zone-01',
-            meterId: 'MTR-' + Math.random().toString(36).substring(7).toUpperCase(),
-            credits: 0,
-            isSocialTariff: false,
-            createdAt: new Date().toISOString(),
-          };
-          await setDoc(userDoc, newProfile);
-          setProfile(newProfile);
-        }
+        profileUnsubscribe = onSnapshot(userDoc, async (snap) => {
+          if (snap.exists()) {
+            setProfile(snap.data() as UserProfile);
+          } else {
+            const newProfile: UserProfile = {
+              uid: u.uid,
+              email: u.email || '',
+              name: u.displayName || 'Contributor',
+              neighborhoodId: 'zone-01',
+              meterId: 'MTR-' + Math.random().toString(36).substring(7).toUpperCase(),
+              credits: 0,
+              isSocialTariff: false,
+              createdAt: new Date().toISOString(),
+            };
+            await setDoc(userDoc, newProfile);
+          }
+          setLoading(false);
+        });
       } else {
         setProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
-    return unsubscribe;
+
+    return () => {
+      authUnsubscribe();
+      profileUnsubscribe();
+    };
   }, []);
 
   const handleAdminAccess = () => {
@@ -175,11 +183,11 @@ export default function App() {
           exit={{ opacity: 0, x: -10 }}
           transition={{ duration: 0.2 }}
         >
-          {isAdminMode ? (
+          {view === 'admin' ? (
             <AdminDashboard />
           ) : (
             <>
-              {view === 'dashboard' && <Dashboard profile={profile} />}
+              {view === 'dashboard' && <Dashboard profile={profile} onViewChange={setView} />}
               {view === 'pledges' && <PledgesView profile={profile} />}
               {view === 'profile' && <ProfileView profile={profile} onUpdate={setProfile} />}
             </>

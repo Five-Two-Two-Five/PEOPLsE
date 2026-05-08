@@ -30,7 +30,7 @@ import {
 import { motion } from 'motion/react';
 import { format } from 'date-fns';
 
-export function Dashboard({ profile }: { profile: UserProfile | null }) {
+export function Dashboard({ profile, onViewChange }: { profile: UserProfile | null, onViewChange: (view: 'pledges') => void }) {
   const [forecasts, setForecasts] = useState<GridForecast[]>([]);
   const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,7 +101,10 @@ export function Dashboard({ profile }: { profile: UserProfile | null }) {
            <span className="text-[10px] text-white/40 uppercase font-black tracking-widest italic">03 / Generation</span>
            <span className="text-5xl font-black text-brand italic uppercase tracking-tighter">Peak</span>
         </div>
-        <div className="p-8 bg-brand text-black flex flex-col justify-between h-40 group cursor-pointer hover:bg-white transition-colors duration-500">
+        <div
+          onClick={() => onViewChange('pledges')}
+          className="p-8 bg-brand text-black flex flex-col justify-between h-40 group cursor-pointer hover:bg-white transition-colors duration-500"
+        >
            <span className="text-[10px] opacity-60 uppercase font-black tracking-widest italic">04 / Action</span>
            <div className="flex items-center justify-between">
               <span className="text-xl font-black uppercase tracking-tighter">Execute Pledge</span>
